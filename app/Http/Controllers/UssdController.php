@@ -11,6 +11,8 @@ use App\Models\KideraB;
 use App\Models\KideraA;
 use App\Models\sessions;
 use App\Models\ReportedCases;
+use App\Models\expectantmothers;
+use App\Models\Tuberculosis;
 
 
 class UssdController extends Controller
@@ -139,7 +141,7 @@ class UssdController extends Controller
                             break;
 
                         case "2":             //for antenantal care patients
-                            $this->ussd_proceed("Enter Patient ID.good");
+                            $this->ussd_proceed("Enter Patient ID.");
                             break;
 
                         case "3":           //for T.B patients 
@@ -154,7 +156,7 @@ class UssdController extends Controller
                         case "5":           //for other patients
                             $this->ussd_proceed("nter Patient ID");
                             break;
-                            
+
                         case "0":           //for exitting cases
                             $this->ussd_stop("Thank you");
 
@@ -208,17 +210,17 @@ class UssdController extends Controller
 
                         //HIV patients
                         case "1":
-                            $this->ussd_stop("success");
+                            $this->getPatientInfo($ussd_string_exploded[2], $phone);
                         break;
                         
                         //Antenantal
                         case "2":
-                            $this->ussd_stop("success");
+                            $this->getAntenantalInfo($ussd_string_exploded[2], $phone);
                         break;
                         
                         //T.B patients
                         case "3":
-                            $this->ussd_stop("success");
+                            $this->getTBInfo($ussd_string_exploded[2], $phone);
                         break;
 
                         //Mental care
@@ -244,7 +246,11 @@ class UssdController extends Controller
 }
 
 
-    //save malaria reports
+    /**
+     * save malaria cases
+     * 
+     * 
+     */
 
     public function saveMalariaReports($details, $phone){
 
@@ -288,7 +294,12 @@ class UssdController extends Controller
         }
     }
 
-    //save cholera cases
+    /**
+     * save cholera cases
+     * 
+     * 
+     */
+
     public function saveCholeraReports($details, $phone){
 
         //store input values in an array
@@ -331,7 +342,12 @@ class UssdController extends Controller
         }
     }
 
-    //save ebola cases
+    /**
+     * save ebola cases
+     * 
+     * 
+     */
+
     public function saveEbolaReports($details, $phone){
 
         //store input values in an array
@@ -374,7 +390,12 @@ class UssdController extends Controller
         }
     }
 
-    //save covid cases
+    /**
+     * save covid cases 
+     * 
+     * 
+     */
+    
     public function saveChovidReports($details, $phone){
 
         //store input values in an array
@@ -417,7 +438,12 @@ class UssdController extends Controller
         }
     }
 
-    //save Diarrhoea cases
+    /**
+     * save Diarrhoea cases
+     * 
+     * 
+     */
+
     public function saveDiarrhoeaReports($details, $phone){
 
         //store input values in an array
@@ -460,7 +486,12 @@ class UssdController extends Controller
         }
     }
 
-    //save user sessions
+    /**
+     * save user sessions
+     * 
+     * 
+     */
+    
     public function ussdSessions($phone, $sessionId, $serviceCode, $duration, $cost, $status)
     {
         $session = new Sessions;
@@ -474,42 +505,104 @@ class UssdController extends Controller
         $session->save(); 
     }
  
-    /**
-     * Handles Login Request
-     */
-    public function ussdLogin($details, $phone)
-    {
-        $user = User::where('phone', $phone)->first();
-
-        if ($user->pin == $details ) {
-            return "Success";           
-        } else {
-            return $this->ussd_stop("Login was unsuccessful!");
-        }
-    }
-
     
-            //getting patient information
-
-    public function getPatientInfo($details, $phone){
-
-        $ussd_string_exploded = explode ("*",$detail);
-        $input = explode(",",$details);
-        $patientid = trim($input[0]);
+    /**
+     * Getting patient information and displaying it to the user
+     * 
+     * @param string $details - The details sent by the user (patient ID)
+     * @param string $phone - The user's phone number
+     */
+    public function getPatientInfo($details, $phone)
+    {
+        // Extract patient ID from the details
+        $patientId = $details;
 
         $hivpatient = new aidspatients;
 
+        // Retrieve patient information from the database based on the patient ID
+        $patient = aidspatients::where('PatientID', $patientId)->first();
 
-        $hivpatient = aidspatients::where('PatientID', $patientid)->select('Name', 'Phone', 'Last_Visit','District','Subcounty','village')->first();
-        
-        $name = $hivpatient->Name;
-        $phone = $hivpatient->Phone;
-        $lastvisit = $hivpatient->Last_Visit;
-        $district = $hivpatient->District;
-        $subcounty = $hivpatient->subcounty;
-        $village = $hivpatient->village;
+        // Check if the patient exists
+        if ($patient) {
+            // Extract patient details
+            $name = $patient->Name;
+            $phone = $patient->Phone;
+            $lastvisit = $patient->Last_Visit;
+            $district = $patient->District;
+            $subcounty = $patient->Subcounty;
+            $village = $patient->Village; // Assuming Age is a field in the database
 
-        //$this->ussd_stop("Name: " . $name . ", Phone: " . $phone);
+            // Display patient information to the user
+            $this->ussd_stop("Patient Name: $name \n Phone: $phone \n Last Visit: $lastvisit \n District: $district\n Sub County: $subcounty\n Village: $village");
+        } else {
+            // If patient does not exist, display a message to the user
+            $this->ussd_stop("Patient not found.");
+        }
+    }
+
+    public function getAntenantalInfo($details, $phone)
+    {
+        // Extract patient ID from the details
+        $patientId = $details;
+
+        $antenantalpatient = new expectantmothers;
+
+        // Retrieve patient information from the database based on the patient ID
+        $patient = expectantmothers::where('PatientID', $patientId)->first();
+
+        // Check if the patient exists
+        if ($patient) {
+            // Extract patient details
+            $name = $patient->Name;
+            $phone = $patient->Phone;
+            $lastvisit = $patient->Antenantal_care_visits;
+            $district = $patient->District;
+            $subcounty = $patient->Subcounty;
+            $village = $patient->Village; // Assuming Age is a field in the database
+
+            // Display patient information to the user
+            $this->ussd_stop("Patient Name: $name \n Phone: $phone \n Last Visit: $lastvisit \n District: $district\n Sub County: $subcounty\n Village: $village");
+        } else {
+            // If patient does not exist, display a message to the user
+            $this->ussd_stop("Patient not found.");
+        }
+    }
+
+    /* 
+     *getting T.B patients information
+     *
+     * 
+     * 
+     * 
+     * 
+     */
+
+     public function getTBInfo($details, $phone)
+    {
+        // Extract patient ID from the details
+        $patientId = $details;
+
+        $antenantalpatient = new Tuberculosis;
+
+        // Retrieve patient information from the database based on the patient ID
+        $patient = Tuberculosis::where('PatientID', $patientId)->first();
+
+        // Check if the patient exists
+        if ($patient) {
+            // Extract patient details
+            $name = $patient->Name;
+            $phone = $patient->Phone;
+            $lastvisit = $patient->Last_Hospital_Visit;
+            $district = $patient->District;
+            $subcounty = $patient->SubCounty;
+            $village = $patient->Village; // Assuming Age is a field in the database
+
+            // Display patient information to the user
+            $this->ussd_stop("Patient Name: $name \n Phone: $phone \n Last Visit: $lastvisit \n District: $district\n Sub County: $subcounty\n Village: $village");
+        } else {
+            // If patient does not exist, display a message to the user
+            $this->ussd_stop("Patient not found.");
+        }
     }
 
 
