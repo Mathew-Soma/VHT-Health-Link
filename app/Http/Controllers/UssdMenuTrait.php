@@ -53,6 +53,7 @@ trait UssdMenuTrait{
         $follow .= "2. Antenental\n";
         $follow .= "3. T.B\n";
         $follow .= "4. Mental care.\n";
+        $follow .= "5. Other.\n";
         $follow .= "0. Exit.";
         $this->ussd_proceed($follow);
     }
