@@ -77,15 +77,16 @@ class expectantmothersController extends AdminController
     {
         $form = new Form(new expectantmothers());
 
-        $form->text('Name', __('Name'));
-        $form->phonenumber('Phone', __('Phone'));
-        $form->text('PatientID', __('PatientID'));
-        $form->text('Antenantal_care_visits', __('Antenantal care visits'));
-        $form->text('DOB', __('DOB'));
-        $form->text('Complications', __('Complications'));
-        $form->text('District', __('District'));
-        $form->text('Subcounty', __('Subcounty'));
-        $form->text('Village', __('Village'));
+        $form->text('Name', __('Name'))->required()->placeholder('Name')->autofocus();
+        $form->text('Phone', __('Phone'))->required()->placeholder('eg. +256 785 847252');
+        $form->text('PatientID', __('PatientID'))->required();
+        $form->date('Antenantal_care_visits', __('Antenantal care visits'))->required()->placeholder('Date of visit');
+        $form->date('DOB', __('DOB'))->required()->placeholder('Date of birth');
+        $form->text('Complications', __('Complications'))->placeholder('Complications');
+        $form->text('District', __('District'))->required()->placeholder('District');
+        $form->text('Subcounty', __('Subcounty'))->required()->placeholder('Sub county');
+        $form->text('Village', __('Village'))->required()->placeholder('village');
+
 
         return $form;
     }
