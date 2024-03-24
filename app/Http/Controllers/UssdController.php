@@ -81,8 +81,6 @@ class UssdController extends Controller
                 $this->returnTrainingMenu();
             } else if ($ussd_string_exploded[0] == "4") {
                 $this->ussd_proceed("Number of Births.");
-                $this->ussd_proceed("Number of Deaths.");
-                $this->ussd_stop("Thank you.");
             } else if ($ussd_string_exploded[0] == "0") {
                 $this->ussd_stop("Thank you for trusting us.");
             }
@@ -92,77 +90,115 @@ class UssdController extends Controller
         case 2:
             // Handle menu options for diseases
             switch ($ussd_string_exploded[0]) {
-                case "1":
+                case 1:
                     switch ($ussd_string_exploded[1]) {
-
+ 
                         //Number of patients for malaria
-                        case "1":
+                        case 1:
                             $this->ussd_proceed("Number of Patients:");
                         break;
 
                         //Number of patients for cholera
-                        case "2":
+                        case 2:
                             $this->ussd_proceed("Number of Patients:");
                         break;
 
                         //Number of patients for ebola
-                        case "3":
+                        case 3:
                             $this->ussd_proceed("Number of Patients:");
                         break;
 
                         //Number of patients for covid
-                        case "4":
+                        case 4:
                             $this->ussd_proceed("Number of Patients:");
                         break;
 
                         //Number of patients for diarrhoea
-                        case "5":
+                        case 5:
                             $this->ussd_proceed("Number of Patients:");
                         break;
 
                         //Number of patients for other
-                        case "6":
+                        case 6:
                             $this->ussd_proceed("Number of Patients:");
                         break;
 
                         //exit
-                        case "0":
+                        case 0:
                             $this->ussd_stop("Thank you. Always report any case in your community");
+                        break;
+                        default:
+                            echo "Invalid input.";
                         break;
                     }
                     break;
 
                 // The menu for entering the patient id for the patients follow up menu
-                case "2":
+                case 2:
                     switch ($ussd_string_exploded[1]) {
-                        case "1":             //for HIV patients
+                        case 1:             //for HIV patients
                             $this->ussd_proceed("Enter Patient ID.");
                             //$this->getPatientInfo($ussd_string_exploded[1], $phone);
                             break;
 
-                        case "2":             //for antenantal care patients
+                        case 2:             //for antenantal care patients
                             $this->ussd_proceed("Enter Patient ID.");
                             break;
 
-                        case "3":           //for T.B patients 
+                        case 3:           //for T.B patients 
                             $this->ussd_proceed("Enter Patient ID");
                             break;
 
-                        case "4":           //for mental health patients
-                            $this->ussd_proceed("nter Patient ID");
+                        case 4:           //for mental health patients
+                            //$this->ussd_proceed("nter Patient ID");
+
+                            $this->ussd_stop("An sms has been sent to your phone number ".$phone);
 
                             break;
 
-                        case "5":           //for other patients
-                            $this->ussd_proceed("nter Patient ID");
+                        case 5:           //for other patients
+                            $this->ussd_proceed("Enter Patient ID");
                             break;
 
-                        case "0":           //for exitting cases
+                        case 0:           //for exitting cases
                             $this->ussd_stop("Thank you");
-
                             break;
+
+                        default:
+                            echo "Invalid input.";
+                        break;
                     }
                     break;
+                    
+
+                case 3:
+                    switch ($ussd_string_exploded[1]) {
+                        case "1":             //for childhood illness training
+                            $this->ussd_proceed("okay");
+                            
+                        break;
+                        default:
+                            echo "Invalid input.";
+                        break;
+                    }
+                break;
+
+                case 4:
+                    switch ($ussd_string_exploded[1]) {
+                        case "1":             //for
+                            $this->ussd_proceed("okayggg");
+                            //$this->getPatientInfo($ussd_string_exploded[1], $phone);
+                        break;
+                        default:
+                            echo "Invalid input.";
+                        break;
+                    }
+                break;
+                default:
+                    echo "Invalid input.";
+                break;
+
+                
             }
             break;
 
@@ -170,77 +206,92 @@ class UssdController extends Controller
         case 3:
             // Handle menu options for training schedule
             switch ($ussd_string_exploded[0]) {
-                case "1":
+                case 1:
                     switch ($ussd_string_exploded[1]) {
                         //malaria
-                        case "1":
+                        case 1:
                             $this->saveMalariaReports($ussd_string_exploded[2], $phone);//saving the reported case to the database
-                            $this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
+                            $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
+
+                            //$this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
                         break;
                         //cholera
-                        case "2":
+                        case 2:
                             $this->saveCholeraReports($ussd_string_exploded[2], $phone);//saving the reported case to the database
-                            $this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
+                            $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
+                            
+                            //$this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
                         break;
                             //ebola
-                        case "3":
+                        case 3:
                             $this->saveEbolaReports($ussd_string_exploded[2], $phone);//saving the reported case to the database
-                            $this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
+                            $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
+                            
+                            //$this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
                         break;
                             //covid
-                        case "4":
+                        case 4:
                             $this->saveChovidReports($ussd_string_exploded[2], $phone);//saving the reported case to the database
-                            $this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
+                            $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
+                            
+                            //$this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
                         break;
                             //diarrhoea
-                        case "5":
+                        case 5:
                             $this->saveDiarrhoeaReports($ussd_string_exploded[2], $phone);//saving the reported case to the database
-                            $this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
+                            $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
+                            
+                            //$this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
                         break;
                             //others
-                        case "6":
+                        case 6:
                             $this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
                         break;
-
                     }
                     break;
 
-                case "2":
+                case 2:
                     switch ($ussd_string_exploded[1]) {
 
                         //HIV patients
-                        case "1":
+                        case 1:
                             $this->getPatientInfo($ussd_string_exploded[2], $phone);
                         break;
                         
                         //Antenantal
-                        case "2":
+                        case 2:
                             $this->getAntenantalInfo($ussd_string_exploded[2], $phone);
                         break;
                         
                         //T.B patients
-                        case "3":
+                        case 3:
                             $this->getTBInfo($ussd_string_exploded[2], $phone);
                         break;
 
                         //Mental care
-                        case "4":
+                        case 4:
                             $this->ussd_stop("success");
                         break;
                         
                         //Other
-                        case "5":
+                        case 5:
                             $this->ussd_stop("success");
                         break;
                         
                         //exit
-                        case "0":
+                        case 0:
                             $this->ussd_stop("Thank you!");
                         break;
 
+
                     }
             }
-            break;
+        break;default:
+            echo "Invalid input.";
+        break;
+
+
+            
 
     }
 }

@@ -77,15 +77,19 @@ class aidspatientsController extends AdminController
     {
         $form = new Form(new aidspatients());
 
-        $form->text('Name', __('Name'));
-        $form->phonenumber('Phone', __('Phone'));
-        $form->text('Gender', __('Gender'));
-        $form->text('DOB', __('DOB'));
-        $form->text('Last_Visit', __('Last Visit'));
-        $form->text('PatientID', __('PatientID'));
-        $form->text('District', __('District'));
-        $form->text('Subcounty', __('Subcounty'));
-        $form->text('Village', __('Village'));
+        $form->text('Name', __('Name'))->required()->placeholder('Name')->autofocus();
+        $form->text('Phone', __('Phone'))->required()->placeholder('eg. +256 785 847252')->help('start with +256...');
+        //$form->text('Gender', __('Gender'))->required();
+        $form->radio('Gender','Gender')->options(['M' => 'Male', 'F' => 'Female'])->default('M')->required();
+        $form->date('DOB', __('DOB'))->required()->placeholder('Date of birth');
+        $form->date('Last_Visit', __('Last Visit'))->required()->placeholder('Date of visit');
+        // Generate a random number for PatientID
+        $randomPatientID = mt_rand(10000, 99999); // Adjust the range as needed
+        $form->text('PatientID', __('PatientID'))->required()->placeholder('Patient ID')->value($randomPatientID)->readonly();
+    
+        $form->text('District', __('District'))->required()->placeholder('District');
+        $form->text('Subcounty', __('Subcounty'))->required()->placeholder('Subcounty');
+        $form->text('Village', __('Village'))->required()->placeholder('Village');
 
         return $form;
     }

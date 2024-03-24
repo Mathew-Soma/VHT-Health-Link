@@ -22,3 +22,11 @@ use App\Http\Controllers\UssdController;
 Route::post('/ussd', [UssdController::class, 'ussdRequestHandler']);
 Route::get('/ussd', [UssdController::class, 'ussdRequestHandler']);
 
+
+// routes/web.php
+
+use App\Http\Controllers\Admin\HomeController;
+
+Route::get('/admin/home', [HomeController::class, 'index'])->name('admin.home');
+
+

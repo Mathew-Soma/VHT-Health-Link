@@ -36,6 +36,9 @@ Route::group([
     $router->resource('expectantmothers', expectantmothersController::class);
     $router->resource('tuberculoses', TuberculosisController::class);
 
-
+    //hospital routes
+    $router->resource('boma-hospitals', BomaHospitalsController::class);
+    $router->resource('katete-hospitals', KateteHospitalsController::class);
+    $router->resource('kiswahili-hospitals', KiswahiliHospitalsController::class);
 
 });

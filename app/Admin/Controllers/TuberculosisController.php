@@ -75,14 +75,14 @@ class TuberculosisController extends AdminController
     {
         $form = new Form(new Tuberculosis());
 
-        $form->text('Name', __('Name'));
-        $form->phonenumber('Phone', __('Phone'));
-        $form->text('TB_Status', __('TB Status'));
-        $form->text('PatientID', __('PatientID'));
-        $form->text('District', __('District'));
-        $form->text('SubCounty', __('SubCounty'));
-        $form->text('Village', __('Village'));
-        $form->text('Last_Hospital_Visit', __('Last Hospital Visit'));
+        $form->text('Name', __('Name'))->required()->placeholder('Name')->autofocus();
+        $form->text('Phone', __('Phone'))->required()->placeholder('eg. +256 785 847252');
+        $form->radio('TB_Status','TB_Status')->options(['Active' => 'Active', 'Latent' => 'Latent'])->default('Active')->required();
+        $form->text('PatientID', __('PatientID'))->required();
+        $form->text('District', __('District'))->required()->placeholder('District');
+        $form->text('Subcounty', __('Subcounty'))->required()->placeholder('Sub county');
+        $form->text('Village', __('Village'))->required()->placeholder('village');
+        $form->date('Last_Hospital_Visit', __('Last Hospital Visit'))->required()->placeholder('Date of visit');
 
         return $form;
     }
