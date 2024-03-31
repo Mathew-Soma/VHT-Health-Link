@@ -34,7 +34,6 @@ class UssdController extends Controller
         header('Content-type: text/plain');
 
         if (
-            vhtmembers::where('Phone', $phone)->exists() ||
             kideraa::where('Phone', $phone)->exists() ||
             kiderab::where('Phone', $phone)->exists() ||
             katete::where('Phone', $phone)->exists() 
@@ -76,10 +75,11 @@ class UssdController extends Controller
                 $this->DiseasesMenu();
                 //$this->ussd_proceed("Please enter disease name, number of patients and risk level e.g \n Malaria,12,High");
             } else if ($ussd_string_exploded[0] == "2") {
-                $this->returnFollowupMenu();
+                 $this->returnFollowupMenu();
             } else if ($ussd_string_exploded[0] == "3") {
-                $this->returnTrainingMenu();
+                 $this->returnTrainingMenu();
             } else if ($ussd_string_exploded[0] == "4") {
+
                 $this->ussd_proceed("Number of Births.");
             } else if ($ussd_string_exploded[0] == "0") {
                 $this->ussd_stop("Thank you for trusting us.");
@@ -95,6 +95,7 @@ class UssdController extends Controller
  
                         //Number of patients for malaria
                         case 1:
+                             
                             $this->ussd_proceed("Number of Patients:");
                         break;
 
@@ -210,38 +211,42 @@ class UssdController extends Controller
                     switch ($ussd_string_exploded[1]) {
                         //malaria
                         case 1:
-                            $this->saveMalariaReports($ussd_string_exploded[2], $phone);//saving the reported case to the database
-                            $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
-
-                            //$this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
-                        break;
-                        //cholera
+                            try {
+                                $this->saveMalariaReports($ussd_string_exploded[2], $phone);
+                                $this->ussd_proceed("Thank you for your concern. You will receive communication from the health inspector shortly.");
+                                $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
+                            } catch (Exception $e) {
+                                // Handle the exception
+                                echo 'Caught exception: ',  $e->getMessage(), "\n";
+                            }
+                            break;
+                            //cholera
                         case 2:
+                            $this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
                             $this->saveCholeraReports($ussd_string_exploded[2], $phone);//saving the reported case to the database
-                            $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
-                            
-                            //$this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
-                        break;
+                            //$this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
+                            break;
                             //ebola
                         case 3:
                             $this->saveEbolaReports($ussd_string_exploded[2], $phone);//saving the reported case to the database
                             $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
                             
-                            //$this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
+                            $this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
                         break;
                             //covid
                         case 4:
+                            $this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
+
                             $this->saveChovidReports($ussd_string_exploded[2], $phone);//saving the reported case to the database
                             $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
                             
-                            //$this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
                         break;
                             //diarrhoea
                         case 5:
                             $this->saveDiarrhoeaReports($ussd_string_exploded[2], $phone);//saving the reported case to the database
-                            $this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
+                            //$this->sendSmsToInspectors("Hello, a new case has been reported by a VHT, Kindly check the VHT Health Link for more information");
                             
-                            //$this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
+                            $this->ussd_stop("Thank you for your concern. You will recieve communication from the health inspector shortly.");
                         break;
                             //others
                         case 6:
@@ -625,7 +630,6 @@ class UssdController extends Controller
      * 
      * 
      * 
-     * 
      */
 
      public function getTBInfo($details, $phone)
@@ -658,13 +662,19 @@ class UssdController extends Controller
 
 
 
-    public function ussd_proceed($ussd_text) {
-        echo "CON $ussd_text";
 
-    }
-    public function ussd_stop($ussd_text) {
-        echo "END $ussd_text";
-    }
+
+
+            // For continuing the USSD session
+        public function ussd_proceed($ussd_text) {
+            echo "CON $ussd_text";
+        }
+
+        // For ending the USSD session
+        public function ussd_stop($ussd_text) {
+            echo "END $ussd_text";
+        }
+
     
     
 }
